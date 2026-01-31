@@ -1,0 +1,82 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  transition: 0.3s;
+}
+
+body.dark {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+body.light {
+  background: #f9fafb;
+  color: #020617;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+}
+
+.player, .controls, .chat {
+  padding: 12px;
+}
+
+.controls button {
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+input[type=range] {
+  width: 100%;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#chatBox {
+  height: 120px;
+  background: #020617;
+  color: #e5e7eb;
+  padding: 8px;
+  border-radius: 6px;
+  overflow-y: auto;
+}
+
+body.light #chatBox {
+  background: #e5e7eb;
+  color: #020617;
+}
+
+#chatInput {
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+body.light #chatInput {
+  background: #e5e7eb;
+  color: #020617;
+}
+
+/* JITSI VISIBILITY */
+.jitsi-hidden {
+  display: none;
+}
+
+.jitsi-show {
+  display: block;
+  width: 100%;
+  height: 400px;
+  margin-top: 16px;
+}
