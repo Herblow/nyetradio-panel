@@ -8,49 +8,43 @@ toggle.onclick = () => {
 // JOIN TALK (NO JITSI UI)
 document.getElementById("joinTalk").onclick = () => {
   if (window.jitsiApi) {
-  alert("Lo udah di room talk");
-  return;
-}  
+    alert("Lo udah di room talk");
+    return;
+  }
 
   const jitsiBox = document.getElementById("jitsi");
   jitsiBox.classList.remove("jitsi-hidden");
   jitsiBox.classList.add("jitsi-show");
 
+  // ✅ Constructor Jitsi benar
+  window.jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
     roomName: "nyetradio-talk",
     parentNode: jitsiBox,
-
-    userInfo: {
-      displayName: "Listener"
-    },
-
+    userInfo: { displayName: "Listener" },
     configOverwrite: {
       prejoinPageEnabled: false,
       startWithAudioMuted: false,
       startWithVideoMuted: true,
       disableDeepLinking: true
     },
-
     interfaceConfigOverwrite: {
-      TOOLBAR_BUTTONS: [
-        "microphone",
-        "hangup"
-      ],
+      TOOLBAR_BUTTONS: ["microphone", "hangup"],
       SHOW_JITSI_WATERMARK: false,
       SHOW_WATERMARK_FOR_GUESTS: false
     }
   });
 
+  // Event: close room
   window.jitsiApi.addEventListener("readyToClose", () => {
-  const jitsiBox = document.getElementById("jitsi");
-  jitsiBox.classList.remove("jitsi-show");
-  jitsiBox.classList.add("jitsi-hidden");
+    jitsiBox.classList.remove("jitsi-show");
+    jitsiBox.classList.add("jitsi-hidden");
 
-  window.jitsiApi.dispose();
-  window.jitsiApi = null;
-});
+    window.jitsiApi.dispose();
+    window.jitsiApi = null;
+  });
 
-  // AUTO JOIN TANPA PREJOIN
-  api.addEventListener("videoConferenceJoined", () => {
+  // Auto join
+  window.jitsiApi.addEventListener("videoConferenceJoined", () => {
     console.log("Langsung masuk room");
   });
 };
