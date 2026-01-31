@@ -1,3 +1,15 @@
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDV5K8-zseYUbtzK7QJAkyN-UnILiSFOkg",
+  authDomain: "live-chat-nyet.firebaseapp.com",
+  databaseURL: "https://live-chat-nyet-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "live-chat-nyet",
+  storageBucket: "live-chat-nyet.firebasestorage.app",
+  messagingSenderId: "112945135453",
+  appId: "1:112945135453:web:983ed80516e971091ef2b4",
+  measurementId: "G-D69QGGJJ6T"
+};
+
 // =======================
 // GLOBAL VAR
 // =======================
@@ -60,15 +72,26 @@ document.getElementById("joinTalk").onclick = () => {
   });
 };
 
-// =======================
-// CHAT UI (LOCAL ONLY)
-// =======================
+// 🔥 REAL-TIME CHAT
 const chatBox = document.getElementById("chatBox");
-document.getElementById("chatInput").addEventListener("keydown", e => {
-  if (e.key === "Enter" && e.target.value.trim()) {
-    const div = document.createElement("div");
-    div.textContent = e.target.value;
-    chatBox.appendChild(div);
-    e.target.value = "";
+const chatInput = document.getElementById("chatInput");
+const chatRef = db.ref("chat");
+
+chatInput.addEventListener("keydown", e => {
+  if (e.key === "Enter" && chatInput.value.trim()) {
+    chatRef.push({
+      user: "Listener",
+      text: chatInput.value,
+      time: Date.now()
+    });
+    chatInput.value = "";
   }
+});
+
+chatRef.limitToLast(50).on("child_added", snapshot => {
+  const msg = snapshot.val();
+  const div = document.createElement("div");
+  div.innerHTML = `<b>${msg.user}:</b> ${msg.text}`;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
 });
