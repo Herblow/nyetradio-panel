@@ -2,7 +2,10 @@ let jitsiApi = null;
 
 // JOIN TALK
 document.getElementById("joinTalk").onclick = () => {
-  if (jitsiApi) return;
+  if (window.jitsiApi) {
+  alert("Lo udah di room talk");
+  return;
+}
 
   jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
     roomName: "nyetradio-talk",
