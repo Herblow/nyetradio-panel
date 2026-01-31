@@ -80,3 +80,9 @@ body.light #chatInput {
   height: 400px;
   margin-top: 16px;
 }
+
+#jitsi {
+  border: 2px solid #22c55e;
+  border-radius: 8px;
+  margin-top: 10px;
+}
