@@ -1,3 +1,5 @@
+let jitsiApi = null; // <<< deklarasi global untuk Jitsi
+
 // THEME
 const toggle = document.getElementById("themeToggle");
 toggle.onclick = () => {
@@ -7,7 +9,7 @@ toggle.onclick = () => {
 
 // JOIN TALK (NO JITSI UI)
 document.getElementById("joinTalk").onclick = () => {
-  if (window.jitsiApi) {
+  if (jitsiApi) {
     alert("Lo udah di room talk");
     return;
   }
@@ -17,7 +19,7 @@ document.getElementById("joinTalk").onclick = () => {
   jitsiBox.classList.add("jitsi-show");
 
   // ✅ Constructor Jitsi benar
-  window.jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
+  jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
     roomName: "nyetradio-talk",
     parentNode: jitsiBox,
     userInfo: { displayName: "Listener" },
@@ -35,25 +37,20 @@ document.getElementById("joinTalk").onclick = () => {
   });
 
   // Event: close room
-  window.jitsiApi.addEventListener("readyToClose", () => {
-    jitsiBox.classList.remove("jitsi-show");
-    jitsiBox.classList.add("jitsi-hidden");
+  jitsiApi.addEventListener("readyToClose", () => {
+    const jitsiBox = document.getElementById("jitsi");
+  jitsiBox.classList.remove("jitsi-show");
+  jitsiBox.classList.add("jitsi-hidden");
 
-    window.jitsiApi.dispose();
-    window.jitsiApi = null;
-  });
+  jitsiApi.dispose();
+  jitsiApi = null;
+});
 
   // Auto join
-  window.jitsiApi.addEventListener("videoConferenceJoined", () => {
+  jitsiApi.addEventListener("videoConferenceJoined", () => {
     console.log("Langsung masuk room");
   });
 };
-
-// VOLUME CONTROL (LISTENER SIDE)
-document.getElementById("volume").addEventListener("input", e => {
-  const audio = document.querySelector("audio");
-  if (audio) audio.volume = e.target.value;
-});
 
 // CHAT UI (LOCAL ONLY)
 const chatBox = document.getElementById("chatBox");
