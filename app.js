@@ -33,7 +33,7 @@ document.getElementById("joinTalk").onclick = () => {
     parentNode: jitsiBox,
     userInfo: { displayName: "Listener" },
     configOverwrite: {
-      prejoinPageEnabled: false,   // auto join tanpa prejoin page
+      prejoinPageEnabled: true,   // auto join tanpa prejoin page
       startWithAudioMuted: false,  // mic langsung aktif
       startWithVideoMuted: true,
       disableDeepLinking: true
