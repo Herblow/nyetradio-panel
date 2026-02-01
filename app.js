@@ -36,6 +36,17 @@ chatRef.limitToLast(50).on("child_added", (snapshot) => {
   chatBox.scrollTop = chatBox.scrollHeight;
 });
 
+const nowPlayingRef = db.ref("nowPlaying");
+
+// TEST: kirim data dummy
+nowPlayingRef.set({
+  title: "TEST SONG",
+  artist: "NyetRadio",
+  album: "Prototype",
+  cover: "",
+  startedAt: Date.now()
+});
+
 // =======================
 // GLOBAL VAR
 // =======================
