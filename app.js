@@ -13,6 +13,27 @@ const firebaseConfig = {
 const db = firebase.database();
 const chatRef = db.ref("chat");
 
+const chatInput = document.getElementById("chatInput");
+const chatBox = document.getElementById("chatBox");
+
+chatInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && chatInput.value.trim() !== "") {
+    chatRef.push({
+      text: chatInput.value,
+      time: Date.now()
+    });
+    chatInput.value = "";
+  }
+});
+
+chatRef.limitToLast(50).on("child_added", (snapshot) => {
+  const msg = snapshot.val();
+  const div = document.createElement("div");
+  div.textContent = msg.text;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
+
 // =======================
 // GLOBAL VAR
 // =======================
@@ -75,26 +96,3 @@ document.getElementById("joinTalk").onclick = () => {
   });
 };
 
-// 🔥 REAL-TIME CHAT
-const chatBox = document.getElementById("chatBox");
-const chatInput = document.getElementById("chatInput");
-const chatRef = db.ref("chat");
-
-chatInput.addEventListener("keydown", e => {
-  if (e.key === "Enter" && chatInput.value.trim()) {
-    chatRef.push({
-      user: "Listener",
-      text: chatInput.value,
-      time: Date.now()
-    });
-    chatInput.value = "";
-  }
-});
-
-chatRef.limitToLast(50).on("child_added", snapshot => {
-  const msg = snapshot.val();
-  const div = document.createElement("div");
-  div.innerHTML = `<b>${msg.user}:</b> ${msg.text}`;
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
-});
