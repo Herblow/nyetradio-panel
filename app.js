@@ -10,6 +10,9 @@ const firebaseConfig = {
   measurementId: "G-D69QGGJJ6T"
 };
 
+const db = firebase.database();
+const chatRef = db.ref("chat");
+
 // =======================
 // GLOBAL VAR
 // =======================
