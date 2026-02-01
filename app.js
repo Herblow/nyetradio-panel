@@ -47,6 +47,10 @@ nowPlayingRef.set({
   startedAt: Date.now()
 });
 
+db.ref("nowPlaying").on("value", (snap) => {
+  console.log("NOW PLAYING =", snap.val());
+});
+
 // =======================
 // GLOBAL VAR
 // =======================
