@@ -10,6 +10,8 @@ const firebaseConfig = {
   measurementId: "G-D69QGGJJ6T"
 };
 
+firebase.initializeApp(firebaseConfig);
+
 const db = firebase.database();
 const chatRef = db.ref("chat");
 
