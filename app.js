@@ -36,19 +36,54 @@ chatRef.limitToLast(50).on("child_added", (snapshot) => {
   chatBox.scrollTop = chatBox.scrollHeight;
 });
 
+const playlistRef = db.ref("playlist");
+
+const playlistData = [
+  {
+    title: "Intro Nyet Radio",
+    artist: "Nyet FM",
+    album: "Station ID",
+    cover: "",
+    duration: 15
+  },
+  {
+    title: "2Pac - Hit Em Up",
+    artist: "2Pac",
+    album: "All Eyez On Me",
+    cover: "",
+    duration: 305
+  }
+];
+
+// JALANKAN SEKALI
+playlistRef.set(playlistData);
+
+const playlistRef = db.ref("playlist");
 const nowPlayingRef = db.ref("nowPlaying");
 
-// TEST: kirim data dummy
-nowPlayingRef.set({
-  title: "TEST SONG",
-  artist: "NyetRadio",
-  album: "Prototype",
-  cover: "",
-  startedAt: Date.now()
-});
+let currentIndex = 0;
 
-db.ref("nowPlaying").on("value", (snap) => {
-  console.log("NOW PLAYING =", snap.val());
+playlistRef.once("value", (snapshot) => {
+  const playlist = snapshot.val();
+  if (!playlist) return;
+
+  function playNext() {
+    const song = playlist[currentIndex];
+
+    nowPlayingRef.set({
+      title: song.title,
+      artist: song.artist,
+      album: song.album || "",
+      cover: song.cover || "",
+      startedAt: Date.now(),
+      duration: song.duration
+    });
+
+    currentIndex = (currentIndex + 1) % playlist.length;
+    setTimeout(playNext, song.duration * 1000);
+  }
+
+  playNext();
 });
 
 // =======================
