@@ -42,8 +42,10 @@ const nowPlayingRef = db.ref("nowPlaying");
 let currentIndex = 0;
 
 playlistRef.once("value", (snapshot) => {
-  const playlist = snapshot.val();
-  if (!playlist) return;
+  const data = snapshot.val();
+  if (!data) return;
+
+  const playlist = Object.values(data); // 🔥 FIX FIREBASE
 
   function playNext() {
     const song = playlist[currentIndex];
