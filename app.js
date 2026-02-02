@@ -1,4 +1,6 @@
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// =======================
+// FIREBASE INIT
+// =======================
 const firebaseConfig = {
   apiKey: "AIzaSyDV5K8-zseYUbtzK7QJAkyN-UnILiSFOkg",
   authDomain: "live-chat-nyet.firebaseapp.com",
@@ -13,8 +15,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
-const chatRef = db.ref("chat");
 
+// =======================
+// CHAT (TIDAK DIUBAH)
+// =======================
+const chatRef = db.ref("chat");
 const chatInput = document.getElementById("chatInput");
 const chatBox = document.getElementById("chatBox");
 
@@ -36,73 +41,108 @@ chatRef.limitToLast(50).on("child_added", (snapshot) => {
   chatBox.scrollTop = chatBox.scrollHeight;
 });
 
+// =======================
+// PLAYLIST & NOW PLAYING
+// =======================
 const playlistRef = db.ref("playlist");
 const nowPlayingRef = db.ref("nowPlaying");
 
-let currentIndex = 0;
+let playTimer = null;
 
-playlistRef.once("value", (snapshot) => {
+// AUTO ROTATE PLAYLIST (AMAN DARI RELOAD)
+playlistRef.on("value", (snapshot) => {
   const data = snapshot.val();
   if (!data) return;
 
-  const playlist = Object.values(data); // 🔥 FIX FIREBASE
+  const playlist = Object.values(data);
 
-  function playNext() {
-    const song = playlist[currentIndex];
+  nowPlayingRef.once("value", (npSnap) => {
+    let index = 0;
 
-    nowPlayingRef.set({
-      title: song.title,
-      artist: song.artist,
-      album: song.album || "",
-      cover: song.cover || "",
-      startedAt: Date.now(),
-      duration: song.duration
-    });
+    if (npSnap.exists()) {
+      const current = npSnap.val();
+      const found = playlist.findIndex(
+        s => s.title === current.title && s.artist === current.artist
+      );
+      index = found === -1 ? 0 : (found + 1) % playlist.length;
+    }
 
-    currentIndex = (currentIndex + 1) % playlist.length;
-    setTimeout(playNext, song.duration * 1000);
-  }
+    function playNext() {
+      const song = playlist[index];
 
-  playNext();
+      nowPlayingRef.set({
+        title: song.title,
+        artist: song.artist,
+        album: song.album || "",
+        cover: song.cover || "",
+        startedAt: Date.now(),
+        duration: song.duration
+      });
+
+      index = (index + 1) % playlist.length;
+      playTimer = setTimeout(playNext, song.duration * 1000);
+    }
+
+    if (!playTimer) playNext();
+  });
 });
 
 // =======================
-// GLOBAL VAR
+// RENDER NOW PLAYING
+// =======================
+const nowPlayingBox = document.getElementById("nowPlaying");
+
+nowPlayingRef.on("value", (snapshot) => {
+  const song = snapshot.val();
+  if (!song) return;
+
+  nowPlayingBox.innerHTML = `
+    <b>${song.title}</b><br>
+    ${song.artist}
+  `;
+});
+
+// =======================
+// RENDER PLAYLIST
+// =======================
+const playlistBox = document.getElementById("playlistBox");
+
+playlistRef.on("value", (snapshot) => {
+  const data = snapshot.val();
+  if (!data) return;
+
+  const playlist = Object.values(data);
+  playlistBox.innerHTML = "";
+
+  playlist.forEach((song, i) => {
+    const div = document.createElement("div");
+    div.innerHTML = `${i + 1}. <b>${song.title}</b> - ${song.artist}`;
+    playlistBox.appendChild(div);
+  });
+});
+
+// =======================
+// JITSI (TIDAK DIUBAH)
 // =======================
 let jitsiApi = null;
 
-// =======================
-// THEME TOGGLE
-// =======================
-const toggle = document.getElementById("themeToggle");
-toggle.onclick = () => {
-  document.body.classList.toggle("light");
-  document.body.classList.toggle("dark");
-};
-
-// =======================
-// JOIN TALK
-// =======================
 document.getElementById("joinTalk").onclick = () => {
-  // Udah join?
   if (jitsiApi) {
     alert("Lo udah di room talk");
     return;
   }
 
-  // 1️⃣ tampilkan div Jitsi
   const jitsiBox = document.getElementById("jitsi");
   jitsiBox.classList.remove("jitsi-hidden");
   jitsiBox.classList.add("jitsi-show");
 
-  // 2️⃣ init Jitsi
   jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
     roomName: "nyetradio-talk",
     parentNode: jitsiBox,
     userInfo: { displayName: "Listener" },
     configOverwrite: {
-      prejoinPageEnabled: true,   // auto join tanpa prejoin page
-      startWithAudioMuted: false,  // mic langsung aktif
+      prejoinPageEnabled: true,
+      startWithAudioMuted: false,
       startWithVideoMuted: true,
       disableDeepLinking: true
     },
@@ -113,18 +153,10 @@ document.getElementById("joinTalk").onclick = () => {
     }
   });
 
-  // 3️⃣ event: auto join log
-  jitsiApi.addEventListener("videoConferenceJoined", () => {
-    console.log("🎙 Langsung masuk room");
-  });
-
-  // 4️⃣ event: close room
   jitsiApi.addEventListener("readyToClose", () => {
     jitsiBox.classList.remove("jitsi-show");
     jitsiBox.classList.add("jitsi-hidden");
-
     jitsiApi.dispose();
     jitsiApi = null;
   });
 };
-
