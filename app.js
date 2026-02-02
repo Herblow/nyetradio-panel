@@ -36,9 +36,10 @@ chatRef.limitToLast(50).on("child_added", (snapshot) => {
   chatBox.scrollTop = chatBox.scrollHeight;
 });
 
+// === INIT PLAYLIST (JALANKAN SEKALI) ===
 const playlistRef = db.ref("playlist");
 
-const playlistData = [
+playlistRef.set([
   {
     title: "Intro Nyet Radio",
     artist: "Nyet FM",
@@ -53,12 +54,8 @@ const playlistData = [
     cover: "",
     duration: 305
   }
-];
+]);
 
-// JALANKAN SEKALI
-playlistRef.set(playlistData);
-
-const playlistRef = db.ref("playlist");
 const nowPlayingRef = db.ref("nowPlaying");
 
 let currentIndex = 0;
