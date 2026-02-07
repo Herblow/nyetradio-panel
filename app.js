@@ -13,7 +13,6 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const db = firebase.database();
 
 // =======================
@@ -42,69 +41,32 @@ chatRef.limitToLast(50).on("child_added", (snapshot) => {
 });
 
 // =======================
-// PLAYLIST & NOW PLAYING
+// NOW PLAYING (DARI MACRODROID)
 // =======================
-const playlistRef = db.ref("playlist");
 const nowPlayingRef = db.ref("nowPlaying");
-
-let playTimer = null;
-
-// AUTO ROTATE PLAYLIST (AMAN DARI RELOAD)
-playlistRef.on("value", (snapshot) => {
-  const data = snapshot.val();
-  if (!data) return;
-
-  const playlist = Object.values(data);
-
-  nowPlayingRef.once("value", (npSnap) => {
-    let index = 0;
-
-    if (npSnap.exists()) {
-      const current = npSnap.val();
-      const found = playlist.findIndex(
-        s => s.title === current.title && s.artist === current.artist
-      );
-      index = found === -1 ? 0 : (found + 1) % playlist.length;
-    }
-
-    function playNext() {
-      const song = playlist[index];
-
-      nowPlayingRef.set({
-        title: song.title,
-        artist: song.artist,
-        album: song.album || "",
-        cover: song.cover || "",
-        startedAt: Date.now(),
-        duration: song.duration
-      });
-
-      index = (index + 1) % playlist.length;
-      playTimer = setTimeout(playNext, song.duration * 1000);
-    }
-
-    if (!playTimer) playNext();
-  });
-});
-
-// =======================
-// RENDER NOW PLAYING
-// =======================
 const nowPlayingBox = document.getElementById("nowPlaying");
 
+// Hanya membaca (Listen), tidak menulis (Set) agar tidak bentrok
 nowPlayingRef.on("value", (snapshot) => {
   const song = snapshot.val();
-  if (!song) return;
+  if (!song) {
+    nowPlayingBox.innerHTML = "<b>Waiting for Stream...</b>";
+    return;
+  }
 
+  // Menampilkan data yang dikirim MacroDroid (artist & title)
   nowPlayingBox.innerHTML = `
-    <b>${song.title}</b><br>
-    ${song.artist}
+    <div class="song-info">
+      <h2 id="songTitle">${song.title || 'Unknown Title'}</h2>
+      <p id="songArtist">${song.artist || 'Unknown Artist'}</p>
+    </div>
   `;
 });
 
 // =======================
-// RENDER PLAYLIST
+// RENDER PLAYLIST (OPTIONAL)
 // =======================
+const playlistRef = db.ref("playlist");
 const playlistBox = document.getElementById("playlistBox");
 
 playlistRef.on("value", (snapshot) => {
@@ -125,7 +87,6 @@ playlistRef.on("value", (snapshot) => {
 // JITSI (TIDAK DIUBAH)
 // =======================
 let jitsiApi = null;
-
 document.getElementById("joinTalk").onclick = () => {
   if (jitsiApi) {
     alert("Lo udah di room talk");
@@ -160,3 +121,4 @@ document.getElementById("joinTalk").onclick = () => {
     jitsiApi = null;
   });
 };
+
