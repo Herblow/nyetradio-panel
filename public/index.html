@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>NyetRadio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark">
+
+<header>
+  <h1>🎧 NyetRadio</h1>
+  <button id="themeToggle">🌙</button>
+</header>
+
+<section class="player">
+  <!-- CASTER PLAYER (COMPLIANT) -->
+  <div class="cstrEmbed"
+    data-type="newStreamPlayer"
+    data-publicToken="a85e1285-14cc-41e1-a49a-803361f70b79"
+    data-theme="dark"
+    data-color="22c55e">
+
+    <a href="https://www.caster.fm">Shoutcast Hosting</a>
+    <a href="https://www.caster.fm">Stream Hosting</a>
+    <a href="https://www.caster.fm">Radio Server Hosting</a>
+
+  </div>
+</section>
+
+<section class="controls">
+  <button id="joinTalk">🎙 Join Talk</button>
+
+<section class="chat">
+  <div id="chatBox"></div>
+  <input type="text" id="chatInput" placeholder="Chat (UI only)">
+</section>
+
+<!-- JITSI HIDDEN -->
+<div id="jitsi" style="display:hidden;"></div>
+
+<script src="//cdn.cloud.caster.fm/widgets/embed.js"></script>
+<script src="https://meet.jit.si/external_api.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
+
+

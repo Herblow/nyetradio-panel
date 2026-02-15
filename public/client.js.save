@@ -1,0 +1,55 @@
+const joinBtn = document.getElementById('join');
+const musicEl = document.getElementById('music');
+const status = document.getElementById('status');
+const audioContainer = document.body;
+
+let localStream;
+const peers = {};
+const socket = io();
+let audioCtx;
+
+joinBtn.onclick = async () => {
+    // 1️⃣ unlock audio context
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    await audioCtx.resume();
+
+    try {
+        // 2️⃣ ambil mic
+        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const micSource = audioCtx.createMediaStreamSource(micStream);
+
+        // 3️⃣ ambil musik
+        const musicSource = audioCtx.createMediaElementSource(musicEl);
+
+        // 4️⃣ mix mic + musik
+        const destination = audioCtx.createMediaStreamDestination();
+        micSource.connect(destination);
+        musicSource.connect(destination);
+
+        localStream = destination.stream;
+
+        status.textContent = "LIVE 🎙️";
+
+        // 5️⃣ tambahkan ke semua peer yang sudah connect
+        Object.values(peers).forEach(pc => {
+            localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+        });
+
+        console.log("✅ Mic + musik siap dikirim ke peer");
+    } catch(e) {
+        console.error("Mic atau musik error:", e);
+        status.textContent = "Error ❌";
+    }
+};
+
+// === Terima peer baru ===
+socket.on('new-user', id => {
+    const pc = new RTCPeerConnection();
+    peers[id] = pc;
+
+    if(localStream) localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+    pc.ontrack = e => {
+        let audio = document.getElementById('peer-' + id);
+        if(!audio){
+            audio = document.c
