@@ -410,33 +410,46 @@
   const btnPlayMain = document.getElementById('btnPlayMain');
   const statusAudio = document.getElementById('statusAudio');
   const visualizer = document.getElementById('visualizer');
-  const streamUrl = "http://95.154.196.37:26618/;"; 
+  const streamUrl = "https://corsproxy.io/?http://95.154.196.37:26618/;";
 
   function toggleMainAudio() {
-      if (audio.paused || audio.src === "") {
-          statusAudio.innerText = "MENGHUBUNGKAN...";
-          audio.src = streamUrl + "?t=" + new Date().getTime();
-          audio.load();
-          setTimeout(() => {
-              let playPromise = audio.play();
-              if (playPromise !== undefined) {
-                  playPromise.then(() => {
-                      btnPlayMain.innerText = "⏸️";
-                      statusAudio.innerText = "STREAMING AKTIF...";
-                      statusAudio.classList.remove('needs-click');
-                      visualizer.classList.add('is-playing');
-                  }).catch(err => {
-                      statusAudio.innerText = "GAGAL HUBUNG!";
-                      alert("Gagal memutar audio. Pastikan Server Radio sedang ON.");
-                  });
-              }
-          }, 300);
-      } else {
-          audio.pause(); audio.src = ""; 
-          btnPlayMain.innerText = "▶️"; statusAudio.innerText = "AUDIO BERHENTI";
-          visualizer.classList.remove('is-playing');
-      }
-  }
+    // 1. Cek kondisi audio
+    if (audio.paused || audio.src === "" || audio.src === window.location.href) {
+        statusAudio.innerText = "MENGHUBUNGKAN...";
+        
+        // 2. Refresh source dengan cache-buster (t=...) agar tidak delay/lag
+        audio.src = streamUrl + "&t=" + Date.now();
+        
+        // 3. Paksa browser memuat ulang stream
+        audio.load();
+
+        // 4. Langsung eksekusi play (Tanpa setTimeout agar Chrome mengizinkan)
+        let playPromise = audio.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                btnPlayMain.innerText = "⏸️";
+                statusAudio.innerText = "STREAMING AKTIF...";
+                statusAudio.classList.remove('needs-click');
+                visualizer.classList.add('is-playing');
+            }).catch(err => {
+                console.error("Playback Error:", err);
+                statusAudio.innerText = "KLIK ULANG!";
+                statusAudio.classList.add('needs-click');
+            });
+        }
+    } else {
+        // 5. Cara mematikan stream yang bersih agar hemat kuota user
+        audio.pause();
+        audio.src = ""; // Kosongkan src
+        audio.removeAttribute('src');
+        audio.load(); // Flush buffer stream
+        
+        btnPlayMain.innerText = "▶️"; 
+        statusAudio.innerText = "AUDIO BERHENTI";
+        visualizer.classList.remove('is-playing');
+    }
+}
 
   function checkUserSession() {
       if (!userName || userName === "Guest") { showWelcomePrompt(); } else { initApp(); }
