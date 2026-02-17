@@ -6,7 +6,7 @@
 LINK_TUNNEL="MASUKKAN_LINK_TUNNEL_DISINI"
 
 # Tambahkan /; di akhir link biar stream lancar
-FINAL_URL="${LINK_TUNNEL}/live.ogg"
+FINAL_URL="${LINK_TUNNEL}/live.ogg;"
 
 # --- PROSES EKSEKUSI ---
 echo "⏳ Sedang menyuntik link ke index.html..."
