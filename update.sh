@@ -19,7 +19,7 @@ sed -i '/\/\/ Update/d' index.html
 
 # --- Push Semua File ---
 git add .
-git commit -m "Add Footer & Fix Menu: $(date +'%H:%M:%S')"
+git commit -m "Fix Layout and Upload All Pages"
 git push origin main --force
 
 echo "🔥 UYEE NYET! Footer kepasang, 404 ilang, radio siap gas!"
