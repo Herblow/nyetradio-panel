@@ -211,6 +211,23 @@
       border-radius: 50%; font-size: 10px; display: flex; align-items: center;
       justify-content: center; border: 1px solid rgba(255,255,255,0.2);
     }
+
+    footer {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #888;
+    text-align: center;
+    padding: 20px 10px;
+    margin-top: 30px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    }
+
+    footer b {
+    color: #00d4ff;
+    }
+
   </style>
 </head>
 <body id="mainBody"> 
@@ -407,7 +424,7 @@
   let isAdmin = false; 
   
 // --- FIX PLAYER AUDIO BY GEMINI ---
-const streamUrl = "https://notes-hanging-exhibition-veterans.trycloudflare.com/live.ogg"; //TARGET
+const streamUrl = "https://plain-bikini-celebrities-medline.trycloudflare.com/live.ogg"; //TARGET
 const audioPlayer = document.getElementById("audioPlayer");
 const btnPlayMain = document.getElementById("btnPlayMain");
 const statusAudio = document.getElementById("statusAudio");
@@ -697,6 +714,11 @@ function tampilkanPopupInfo() {
     tampilkanPopupInfo(); 
     checkUserSession(); 
 };
+
+  <footer>
+    <p>&copy; 2026 <b>NyetRadio</b> • All Rights Reserved</p>
+    <p>Powered by <i>Termux & Cloudflare Tunnel</i></p>
+ </footer>
 
 
 </script>
