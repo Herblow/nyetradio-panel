@@ -1,28 +1,29 @@
 #!/bin/bash
 
-# --- KONFIGURASI ---
-# 1. Masukkan link tunnel lu yang baru dapet dari Cloudflare (pake https)
-# Contoh: https://ciao-fashion-pray-court.trycloudflare.com
-LINK_TUNNEL="MASUKKAN_LINK_TUNNEL_DISINI"
+# --- 1. CARI LINK OTOMATIS ---
+LINK_OTOMATIS=$(grep -o 'https://[a-zA-Z0-9.-]*\.trycloudflare\.com' tunnel.log | tail -n 1)
 
-# Tambahkan /; di akhir link biar stream lancar
-FINAL_URL="${LINK_TUNNEL}/live.ogg"
+if [ -z "$LINK_OTOMATIS" ]; then
+    echo "❌ ERROR: Link Cloudflare gak ketemu di tunnel.log!"
+    exit 1
+fi
 
-# --- PROSES EKSEKUSI ---
-echo "⏳ Sedang menyuntik link ke index.html..."
+FINAL_URL="${LINK_OTOMATIS}/live.ogg"
 
-# Perintah sed untuk mencari baris //TARGET dan mengganti isinya
-# Ini akan mengganti apapun yang ada di dalam tanda kutip const streamUrl
-sed -i "s|const streamUrl = \".*\"; //TARGET|const streamUrl = \"$FINAL_URL\"; //TARGET|g" index.html
+# --- 2. BERSIHIN SAMPAH GIT (FIX ERROR LO) ---
+echo "🧹 Membersihkan konflik..."
+git add .
+git stash clear  # Hapus cache lama biar gak penuh
+git checkout index.html # Balikin index ke asal biar bisa disuntik bersih
 
-echo "🚀 Link tunnel baru: $FINAL_URL"
-echo "📦 Mengunggah ke GitHub..."
+# --- 3. SUNTIK LINK ---
+echo "⏳ Menyuntik link: $FINAL_URL"
+sed -i "s|[Cc]onst streamUrl.*|const streamUrl = \"$FINAL_URL\"; //TARGET|g" index.html
 
-# --- GIT PROSES ---
+# --- 4. PUSH PAKSA ---
+echo "📦 Upload ke GitHub..."
 git add index.html
-git commit -m "Update tunnel: $(date +'%H:%M:%S')"
-git push origin main
+git commit -m "Auto Update: $(date +'%H:%M:%S')"
+git push origin main --force
 
-echo "---------------------------------------"
-echo "✅ BERES COK! Silakan refresh link GitHub lu."
-echo "---------------------------------------"
+echo "🔥 BERES NYET! Cek web lu sekarang."
