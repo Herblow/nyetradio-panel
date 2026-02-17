@@ -687,19 +687,6 @@ audioPlayer.onerror = function() {
       openPopup('NyetNews Detail', `<div style="text-align:left;"><img src="${data.img}" style="width:100%; border-radius:15px; margin-bottom:15px; border:1px solid var(--neon-cyan);"><span style="color:var(--neon-cyan); font-size:10px; font-weight:bold; text-transform:uppercase;">${data.cat}</span><h3 style="font-size:16px; margin:10px 0; color:white;">${data.title}</h3><p style="font-size:13px; color:#cbd5e1; line-height:1.6;">${data.text}</p><button class="feature-btn" style="text-align:center; margin-top:15px;" onclick="window.location.href='news.php'">BACA BERITA LAINNYA</button></div>`);
   }
 
-  function tampilkanPopupInfo() {
-      fetch('popup_info.php')
-      .then(response => response.text())
-      .then(html => {
-          openPopup('NyetRadio Info 📻', html);
-          setTimeout(() => {
-            const innerBtn = document.querySelector('#modalBody button');
-            if(innerBtn) innerBtn.addEventListener('click', window.closePopup);
-          }, 500);
-      }).catch(err => console.log("Popup info error."));
-  }
-
-  window.onload = () => { tampilkanPopupInfo(); checkUserSession(); };
 </script>
 </body>
 </html>
