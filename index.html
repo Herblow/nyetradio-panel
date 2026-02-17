@@ -405,51 +405,51 @@
   let userName = localStorage.getItem("nama");
   let userStatus = localStorage.getItem("userStatus") || "none"; 
   let isAdmin = false; 
+  
+// --- FIX PLAYER AUDIO BY GEMINI ---
+const streamUrl = "https://whatever.trycloudflare.com/live.ogg"; //TARGET
+const audioPlayer = document.getElementById("audioPlayer");
+const btnPlayMain = document.getElementById("btnPlayMain");
+const statusAudio = document.getElementById("statusAudio");
+const visualizer = document.getElementById("visualizer");
 
-  const audio = document.getElementById('audioPlayer');
-  const btnPlayMain = document.getElementById('btnPlayMain');
-  const statusAudio = document.getElementById('statusAudio');
-  const visualizer = document.getElementById('visualizer');
-  const streamUrl = "MASUKKAN_LINK_TUNNEL_DISINI/live.ogg"; //TARGET
-
-  function toggleMainAudio() {
-    // 1. Cek kondisi audio
-    if (audio.paused || audio.src === "" || audio.src === window.location.href) {
-        statusAudio.innerText = "MENGHUBUNGKAN...";
-        
-        // 2. Refresh source dengan cache-buster (t=...) agar tidak delay/lag
-        audio.src = streamUrl + "&t=" + Date.now();
-        
-        // 3. Paksa browser memuat ulang stream
-        audio.load();
-
-        // 4. Langsung eksekusi play (Tanpa setTimeout agar Chrome mengizinkan)
-        let playPromise = audio.play();
-
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                btnPlayMain.innerText = "⏸️";
-                statusAudio.innerText = "STREAMING AKTIF...";
-                statusAudio.classList.remove('needs-click');
-                visualizer.classList.add('is-playing');
-            }).catch(err => {
-                console.error("Playback Error:", err);
-                statusAudio.innerText = "KLIK ULANG!";
-                statusAudio.classList.add('needs-click');
-            });
-        }
-    } else {
-        // 5. Cara mematikan stream yang bersih agar hemat kuota user
-        audio.pause();
-        audio.src = ""; // Kosongkan src
-        audio.removeAttribute('src');
-        audio.load(); // Flush buffer stream
-        
-        btnPlayMain.innerText = "▶️"; 
-        statusAudio.innerText = "AUDIO BERHENTI";
-        visualizer.classList.remove('is-playing');
+function toggleMainAudio() {
+  if (audioPlayer.paused) {
+    // Set sumber suara saat tombol diklik (menghindari blokir browser)
+    if (!audioPlayer.src || audioPlayer.src === "") {
+        audioPlayer.src = streamUrl;
     }
+    
+    statusAudio.innerText = "MENGHUBUNGKAN...";
+    statusAudio.className = "";
+    
+    audioPlayer.play().then(() => {
+      btnPlayMain.innerText = "⏸️";
+      statusAudio.innerText = "LIVE STREAMING";
+      visualizer.classList.add("is-playing");
+    }).catch(err => {
+      console.error("Gagal putar:", err);
+      statusAudio.innerText = "GAGAL PUTAR! KLIK LAGI";
+    });
+  } else {
+    audioPlayer.pause();
+    // Kosongkan src saat stop biar gak makan kuota/data di background
+    audioPlayer.src = ""; 
+    audioPlayer.load(); 
+    btnPlayMain.innerText = "▶️";
+    statusAudio.innerText = "SIAP DIPUTAR";
+    statusAudio.className = "needs-click";
+    visualizer.classList.remove("is-playing");
+  }
 }
+
+// Tambahan buat nanganin error stream putus
+audioPlayer.onerror = function() {
+    statusAudio.innerText = "STREAM OFFLINE / ERROR";
+    visualizer.classList.remove("is-playing");
+    btnPlayMain.innerText = "▶️";
+};
+
 
   function checkUserSession() {
       if (!userName || userName === "Guest") { showWelcomePrompt(); } else { initApp(); }
