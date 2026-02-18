@@ -212,14 +212,6 @@
       justify-content: center; border: 1px solid rgba(255,255,255,0.2);
     }
 
-    footer {
-    font-size: 11px; /* Ukuran mungil tapi masih kebaca */
-    letter-spacing: 0.5px; /* Biar agak renggang dikit, makin cakep */
-    white-space: nowrap; /* Biar dia dipaksa satu baris, kaga bakal turun! */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    }
-
   </style>
 </head>
 <body id="mainBody"> 
@@ -416,7 +408,7 @@
   let isAdmin = false; 
   
 // --- FIX PLAYER AUDIO BY GEMINI ---
-const streamUrl = "https://realized-suffering-grammar-applied.trycloudflare.com/live.ogg"; //TARGET
+const streamUrl = "https://simultaneously-phantom-exhibits-tracker.trycloudflare.com/live.ogg"; //TARGET
 const audioPlayer = document.getElementById("audioPlayer");
 const btnPlayMain = document.getElementById("btnPlayMain");
 const statusAudio = document.getElementById("statusAudio");
@@ -709,7 +701,19 @@ function tampilkanPopupInfo() {
 
 </script>
 
-<footer style="font-size: 10px; text-align: center; padding: 10px; color: #888;">
+<div style="clear: both !important; display: block !important; width: 100% !important;"></div>
+
+<footer style="
+    display: block !important; 
+    text-align: center !important; 
+    width: 100% !important; 
+    clear: both !important; 
+    font-size: 10px !important; 
+    color: #888 !important; 
+    padding: 20px 0 !important;
+    background: #111 !important;
+    border-top: 1px solid #222 !important;
+">
     &copy; 2026 NyetRadio &bull; All Rights Reserved
 </footer>
 
