@@ -212,6 +212,14 @@
       justify-content: center; border: 1px solid rgba(255,255,255,0.2);
     }
 
+    footer {
+    font-size: 11px; /* Ukuran mungil tapi masih kebaca */
+    letter-spacing: 0.5px; /* Biar agak renggang dikit, makin cakep */
+    white-space: nowrap; /* Biar dia dipaksa satu baris, kaga bakal turun! */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    }
+
   </style>
 </head>
 <body id="mainBody"> 
@@ -408,7 +416,7 @@
   let isAdmin = false; 
   
 // --- FIX PLAYER AUDIO BY GEMINI ---
-const streamUrl = "https://students-cultural-magazines-logos.trycloudflare.com/live.ogg"; //TARGET
+const streamUrl = "https://realized-suffering-grammar-applied.trycloudflare.com/live.ogg"; //TARGET
 const audioPlayer = document.getElementById("audioPlayer");
 const btnPlayMain = document.getElementById("btnPlayMain");
 const statusAudio = document.getElementById("statusAudio");
@@ -700,6 +708,11 @@ function tampilkanPopupInfo() {
 };
 
 </script>
+
+<footer style="font-size: 10px; text-align: center; padding: 10px; color: #888;">
+    &copy; 2026 NyetRadio &bull; All Rights Reserved
+</footer>
+
 
 </body>
 </html>
