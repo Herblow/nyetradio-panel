@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NyetRadio - Dashboard</title>
+    <title>NyetRadio - Opus Stable</title>
     <link rel="icon" type="image/png" href="https://files.catbox.moe/rse57p.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/butterchurn"></script>
@@ -42,59 +42,26 @@
     </style>
 </head>
 <body>
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-content">
-            <div id="modalTitle" style="font-weight:bold; color:var(--neon-cyan); margin-bottom:10px;"></div>
-            <div id="modalBody" style="font-size:13px; line-height:1.5;"></div>
-            <button onclick="document.getElementById('modalOverlay').classList.remove('modal-open')" style="width:100%; margin-top:15px; padding:10px; background:var(--neon-cyan); border:none; border-radius:8px; font-weight:bold;">TUTUP</button>
-        </div>
-    </div>
+    <div class="modal-overlay" id="modalOverlay"><div class="modal-content"><div id="modalTitle" style="font-weight:bold; color:var(--neon-cyan); margin-bottom:10px;"></div><div id="modalBody" style="font-size:13px; line-height:1.5;"></div><button onclick="document.getElementById('modalOverlay').classList.remove('modal-open')" style="width:100%; margin-top:15px; padding:10px; background:var(--neon-cyan); border:none; border-radius:8px; font-weight:bold;">TUTUP</button></div></div>
     <div class="container">
         <div class="header">
-            <div style="width: 50%;">
-                <div class="user-info-row">
-                    <img src="https://files.catbox.moe/rse57p.png">
-                    <div><div style="font-size: 10px; opacity: 0.6;">Halo,</div><div id="headerUserName" style="font-weight:700;">Guest</div></div>
-                </div>
-                <div id="serverTime" style="font-size:11px; color:var(--neon-cyan); margin-top:5px;">00:00:00 WIB</div>
-            </div>
-            <div style="width: 45%;">
-                <div class="quote-widget" id="quoteText">"Musik adalah hidup."</div>
-                <div class="prayer-widget"><span class="prayer-marquee" id="prayerSchedule">Memuat jadwal sholat...</span></div>
-            </div>
+            <div style="width: 50%;"><div class="user-info-row"><img src="https://files.catbox.moe/rse57p.png"><div><div style="font-size: 10px; opacity: 0.6;">Halo,</div><div id="headerUserName" style="font-weight:700;">Guest</div></div></div><div id="serverTime" style="font-size:11px; color:var(--neon-cyan); margin-top:5px;">00:00:00 WIB</div></div>
+            <div style="width: 45%;"><div class="quote-widget" id="quoteText">"Musik adalah hidup."</div><div class="prayer-widget"><span class="prayer-marquee" id="prayerSchedule">Memuat jadwal...</span></div></div>
         </div>
         <div style="height: 40px;"></div>
         <div class="player-card">
-            <div id="canvas-container">
-                <canvas id="visualizer-canvas"></canvas>
-                <div id="presetDisplay" style="position:absolute; bottom:5px; right:10px; font-size:8px; opacity:0.5;"></div>
-            </div>
+            <div id="canvas-container"><canvas id="visualizer-canvas"></canvas><div id="presetDisplay" style="position:absolute; bottom:5px; right:10px; font-size:8px; opacity:0.5;"></div></div>
             <button id="btnPlayMain" class="btn-play-main" onclick="toggleMainAudio()">▶️</button>
-            <div id="statusAudio" style="font-size:11px; color:var(--neon-cyan); font-weight:bold;">SIAP GOYANG</div>
+            <div id="statusAudio" style="font-size:11px; color:var(--neon-cyan); font-weight:bold;">OPUS ENGINE READY</div>
             <audio id="audioPlayer" crossorigin="anonymous" playsinline></audio>
         </div>
         <div class="menu-grid">
             <div class="menu-item" onclick="openPopup('Request', 'Kirim request ke Admin!')"><div class="icon-box">🎵</div><span>Request</span></div>
-            <div class="menu-item" onclick="openPopup('Charts', 'Top 10 Tangga Lagu.')"><div class="icon-box">📊</div><span>Charts</span></div>
+            <div class="menu-item" onclick="openPopup('Charts', 'Top 10 Lagu.')"><div class="icon-box">📊</div><span>Charts</span></div>
             <div class="menu-item" onclick="openPopup('Jadwal', '24 Jam Nonstop.')"><div class="icon-box">📅</div><span>Jadwal</span></div>
-            <div class="menu-item" onclick="openPopup('Top Hits', 'Lagu paling HOT!')"><div class="icon-box">⭐</div><span>Top Hits</span></div>
-            <div class="menu-item" onclick="openPopup('Siaran', 'Live Streaming...')"><div class="icon-box">🎙️</div><span>Siaran</span></div>
-            <div class="menu-item" onclick="window.location.href='https://instagram.com'"><div class="icon-box">📸</div><span>IG</span></div>
-            <div class="menu-item" onclick="openPopup('Gallery', 'Foto keseruan NyetRadio.')"><div class="icon-box">🖼️</div><span>Gallery</span></div>
-            <div class="menu-item" onclick="openPopup('Member', 'Daftar member premium.')"><div class="icon-box">💎</div><span>Member</span></div>
+            <div class="menu-item" onclick="openPopup('Gallery', 'Keseruan NyetRadio.')"><div class="icon-box">🖼️</div><span>Gallery</span></div>
         </div>
-        <div class="news-section">
-            <div style="font-weight:bold; font-size:13px; margin-bottom:10px;">🔥 NyetNews Update</div>
-            <div class="news-scroll">
-                <div class="news-card"><img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=400"><div>NyetRadio Vibes Era 2000an!</div></div>
-                <div class="news-card"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=400"><div>Tips Streaming Lancar.</div></div>
-            </div>
-        </div>
-        <div class="chat-section">
-            <div style="font-weight:bold; margin-bottom:10px;">💬 Chat Box</div>
-            <div id="chatBox"></div>
-            <input type="text" id="chatInput" placeholder="Tulis pesan...">
-        </div>
+        <div class="chat-section"><div style="font-weight:bold; margin-bottom:10px;">💬 Chat Box</div><div id="chatBox"></div><input type="text" id="chatInput" placeholder="Tulis pesan..."></div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -106,12 +73,11 @@
         const db = firebase.database();
         
         const audio = document.getElementById('audioPlayer');
-        // URL Tunnel Baru lu
+        // PASTIKAN ENDINGNYA .opus
         const streamUrl = "https://caring-programmes-imperial-casual.trycloudflare.com/live.opus"; 
         
         let audioContext, analyser, visualizer, isPlaying = false, animationId;
-        let allPresets = {}, presetKeys = [];
-        let lastTime = 0;
+        let allPresets = {}, presetKeys = [], lastTime = 0;
 
         async function initEngine() {
             if (!audioContext) {
@@ -136,12 +102,9 @@
             document.getElementById('presetDisplay').innerText = "Vibe: " + key.substring(0, 15);
         }
 
-        // FUNGSI PLAY DENGAN ULTRA RECOVERY
         function toggleMainAudio() {
             if (audio.paused) {
-                initEngine().then(() => {
-                    startStream();
-                });
+                initEngine().then(() => startStream());
             } else {
                 stopStream();
             }
@@ -150,45 +113,23 @@
         function startStream() {
             const btn = document.getElementById('btnPlayMain');
             const status = document.getElementById('statusAudio');
-            status.innerText = "RECOVERING...";
-            
-            audio.pause();
-            audio.src = "";
-            audio.load();
-            
-            // Dual Cache Buster
-            audio.src = streamUrl + "?t=" + Date.now() + "&r=" + Math.random();
-            
+            status.innerText = "BUFFERING OPUS...";
+            audio.pause(); audio.src = ""; audio.load();
+            audio.src = streamUrl + "?cb=" + Date.now();
             audio.play().then(() => {
-                isPlaying = true;
-                btn.innerText = "⏸️";
-                status.innerText = "ON AIR - STABLE";
-                renderVisuals();
-            }).catch(() => {
-                status.innerText = "RETRYING...";
-                setTimeout(startStream, 2000);
-            });
+                isPlaying = true; btn.innerText = "⏸️"; status.innerText = "ON AIR - OPUS";
+                const render = () => { if(isPlaying) { visualizer.render(); animationId = requestAnimationFrame(render); } };
+                render();
+            }).catch(() => { status.innerText = "RECONNECTING..."; setTimeout(startStream, 2000); });
         }
 
         function stopStream() {
-            const btn = document.getElementById('btnPlayMain');
-            const status = document.getElementById('statusAudio');
-            audio.pause();
-            audio.src = "";
-            isPlaying = false;
-            btn.innerText = "▶️";
-            status.innerText = "OFFLINE";
-            if(animationId) cancelAnimationFrame(animationId);
+            audio.pause(); audio.src = ""; isPlaying = false;
+            document.getElementById('btnPlayMain').innerText = "▶️";
+            document.getElementById('statusAudio').innerText = "OFFLINE";
         }
 
-        function renderVisuals() {
-            if(isPlaying) {
-                visualizer.render();
-                animationId = requestAnimationFrame(renderVisuals);
-            }
-        }
-
-        // WATCHDOG: Deteksi macet di tengah jalan
+        // WATCHDOG ULTRA RECOVERY
         setInterval(() => {
             if (isPlaying) {
                 if (audio.currentTime === lastTime && !audio.paused) {
@@ -199,7 +140,6 @@
             }
         }, 3000);
 
-        // FITUR-FITUR LAIN (TIDAK BERUBAH)
         function openPopup(t, b) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerText = b; document.getElementById('modalOverlay').classList.add('modal-open'); }
         
         const chatInput = document.getElementById("chatInput");
@@ -218,9 +158,7 @@
             if (!n) { n = prompt("Siapa namamu?"); if (!n) n = "Guest" + Math.floor(Math.random() * 100); localStorage.setItem("nama", n); }
             document.getElementById('headerUserName').innerText = n;
         };
-
         setInterval(() => { document.getElementById('serverTime').innerText = new Date().toLocaleTimeString('id-ID') + " WIB"; }, 1000);
-        
         fetch('https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=2').then(r => r.json()).then(d => {
             const t = d.data.timings; 
             document.getElementById('prayerSchedule').innerText = `Subuh ${t.Fajr} • Dzuhur ${t.Dhuhr} • Maghrib ${t.Maghrib} • Isya ${t.Isha}`;
