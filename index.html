@@ -96,16 +96,22 @@
             <input type="text" id="chatInput" placeholder="Tulis pesan...">
         </div>
     </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
     <script>
         const firebaseConfig = { apiKey: "AIzaSyDV5K8-zseYUbtzK7QJAkyN-UnILiSFOkg", authDomain: "live-chat-nyet.firebaseapp.com", databaseURL: "https://live-chat-nyet-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "live-chat-nyet" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        
         const audio = document.getElementById('audioPlayer');
+        // URL Tunnel Baru lu
         const streamUrl = "https://caring-programmes-imperial-casual.trycloudflare.com/live.ogg"; 
+        
         let audioContext, analyser, visualizer, isPlaying = false, animationId;
         let allPresets = {}, presetKeys = [];
+        let lastTime = 0;
 
         async function initEngine() {
             if (!audioContext) {
@@ -123,37 +129,82 @@
             }
             if (audioContext.state === 'suspended') await audioContext.resume();
         }
+
         function shufflePreset() {
             const key = presetKeys[Math.floor(Math.random() * presetKeys.length)];
             visualizer.loadPreset(allPresets[key], 2.0);
             document.getElementById('presetDisplay').innerText = "Vibe: " + key.substring(0, 15);
         }
+
+        // FUNGSI PLAY DENGAN ULTRA RECOVERY
         function toggleMainAudio() {
-            const btn = document.getElementById('btnPlayMain');
-            const status = document.getElementById('statusAudio');
             if (audio.paused) {
                 initEngine().then(() => {
-                    status.innerText = "FILLING BUFFER...";
-                    audio.src = streamUrl + "?t=" + Date.now();
-                    audio.load();
-                    setTimeout(() => {
-                        audio.play().then(() => {
-                            isPlaying = true; btn.innerText = "⏸️"; status.innerText = "ON AIR - STABLE";
-                            const render = () => { if(isPlaying) { visualizer.render(); animationId = requestAnimationFrame(render); } };
-                            render();
-                        }).catch(() => { status.innerText = "RETRYING..."; });
-                    }, 1500); 
+                    startStream();
                 });
             } else {
-                audio.pause(); audio.src = ""; isPlaying = false; btn.innerText = "▶️"; status.innerText = "STOPPED";
+                stopStream();
             }
         }
-        // Fix for Stuck Audio
-        setInterval(() => { if (isPlaying && audio.paused && audio.readyState < 3) { audio.play(); } }, 3000);
 
+        function startStream() {
+            const btn = document.getElementById('btnPlayMain');
+            const status = document.getElementById('statusAudio');
+            status.innerText = "RECOVERING...";
+            
+            audio.pause();
+            audio.src = "";
+            audio.load();
+            
+            // Dual Cache Buster
+            audio.src = streamUrl + "?t=" + Date.now() + "&r=" + Math.random();
+            
+            audio.play().then(() => {
+                isPlaying = true;
+                btn.innerText = "⏸️";
+                status.innerText = "ON AIR - STABLE";
+                renderVisuals();
+            }).catch(() => {
+                status.innerText = "RETRYING...";
+                setTimeout(startStream, 2000);
+            });
+        }
+
+        function stopStream() {
+            const btn = document.getElementById('btnPlayMain');
+            const status = document.getElementById('statusAudio');
+            audio.pause();
+            audio.src = "";
+            isPlaying = false;
+            btn.innerText = "▶️";
+            status.innerText = "OFFLINE";
+            if(animationId) cancelAnimationFrame(animationId);
+        }
+
+        function renderVisuals() {
+            if(isPlaying) {
+                visualizer.render();
+                animationId = requestAnimationFrame(renderVisuals);
+            }
+        }
+
+        // WATCHDOG: Deteksi macet di tengah jalan
+        setInterval(() => {
+            if (isPlaying) {
+                if (audio.currentTime === lastTime && !audio.paused) {
+                    console.log("Stuck detected, auto-fixing...");
+                    startStream();
+                }
+                lastTime = audio.currentTime;
+            }
+        }, 3000);
+
+        // FITUR-FITUR LAIN (TIDAK BERUBAH)
         function openPopup(t, b) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerText = b; document.getElementById('modalOverlay').classList.add('modal-open'); }
+        
         const chatInput = document.getElementById("chatInput");
         chatInput.addEventListener("keydown", (e) => { if (e.key === "Enter" && chatInput.value.trim() !== "") { db.ref("chat").push({ user: localStorage.getItem("nama"), text: chatInput.value }); chatInput.value = ""; } });
+        
         db.ref("chat").limitToLast(20).on("child_added", (snap) => {
             const m = snap.val();
             const div = document.createElement("div"); div.className = "chat-bubble";
@@ -161,14 +212,18 @@
             document.getElementById('chatBox').appendChild(div);
             document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
         });
+
         window.onload = () => {
             let n = localStorage.getItem("nama");
             if (!n) { n = prompt("Siapa namamu?"); if (!n) n = "Guest" + Math.floor(Math.random() * 100); localStorage.setItem("nama", n); }
             document.getElementById('headerUserName').innerText = n;
         };
+
         setInterval(() => { document.getElementById('serverTime').innerText = new Date().toLocaleTimeString('id-ID') + " WIB"; }, 1000);
+        
         fetch('https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=2').then(r => r.json()).then(d => {
-            const t = d.data.timings; document.getElementById('prayerSchedule').innerText = `Subuh ${t.Fajr} • Dzuhur ${t.Dhuhr} • Maghrib ${t.Maghrib} • Isya ${t.Isha}`;
+            const t = d.data.timings; 
+            document.getElementById('prayerSchedule').innerText = `Subuh ${t.Fajr} • Dzuhur ${t.Dhuhr} • Maghrib ${t.Maghrib} • Isya ${t.Isha}`;
         });
     </script>
 </body>
